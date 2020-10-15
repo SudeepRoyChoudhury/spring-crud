@@ -20,21 +20,16 @@ import com.example.SpringCRUD.entity.EmployeeEntity;
 import com.example.SpringCRUD.exception.RecordNotFoundException;
 import com.example.SpringCRUD.service.EmployeeService;
 
-//import com.accion.cision.service.EmployeeService;
-
 @RestController
 @RequestMapping("/cision")
 public class EmployeeController {
 
 	@Autowired
-	EmployeeService service;
-	
-	@Autowired
-	EmployeeRepository employeeRepository;
+	private EmployeeService employeeService;
 	
 	@GetMapping(path="/employees")
 	public ResponseEntity<List<EmployeeEntity>> getAllEmployees(){
-		List<EmployeeEntity> list = service.getAllEmployees();
+		List<EmployeeEntity> list = employeeService.getAllEmployees();
 		return new ResponseEntity<List<EmployeeEntity>>(list,new HttpHeaders(),HttpStatus.OK);
 	}
 	
@@ -42,8 +37,7 @@ public class EmployeeController {
 	public ResponseEntity<EmployeeEntity> getEmployeeById(@PathVariable("id") Long id) throws RecordNotFoundException{
 		EmployeeEntity entity;
 		try{
-			entity = service.getEmployeeById(id);
-			//return new ResponseEntity<EmployeeEntity>(entity, new HttpHeaders(),HttpStatus.OK);
+			entity = employeeService.getEmployeeById(id);
 		}catch(RecordNotFoundException e) {
 			return new ResponseEntity<EmployeeEntity>(HttpStatus.NOT_FOUND);
 		}
@@ -52,13 +46,13 @@ public class EmployeeController {
 	
 	@PostMapping(path="/createOrUpdate")
 	public ResponseEntity<EmployeeEntity> createOrUpdateEmployee(@RequestBody EmployeeEntity entity) throws RecordNotFoundException{
-		EmployeeEntity updatedEntity = service.createOrUpdate(entity);
+		EmployeeEntity updatedEntity = employeeService.createOrUpdate(entity);
 		return new ResponseEntity<EmployeeEntity>(updatedEntity,new HttpHeaders(),HttpStatus.OK);	
 	}
 	
 	@DeleteMapping(path="/deleteEmployee/{id}")
 	public ResponseEntity<Object> deleteEmployeeById(@PathVariable("id") Long id) throws RecordNotFoundException{
-		service.deleteEmployeeById(id);
+		employeeService.deleteEmployeeById(id);
 		return ResponseEntity.ok().build();
 		
 	}
